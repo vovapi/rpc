@@ -160,6 +160,21 @@ func (op *AccountCreateOperation) Data() interface{} {
 	return op
 }
 
+// encode AccountCreateOperation{}
+func (op *AccountCreateOperation) MarshalTransaction(encoder *transaction.Encoder) error {
+	enc := transaction.NewRollingEncoder(encoder)
+	enc.EncodeUVarint(uint64(TypeAccountCreate.Code()))
+	enc.EncodeMoney(op.Fee)
+	enc.EncodeString(op.Creator)
+	enc.EncodeString(op.NewAccountName)
+	enc.Encode(op.Owner)
+	enc.Encode(op.Active)
+	enc.Encode(op.Posting)
+	enc.EncodePubKey(op.MemoKey)
+	enc.EncodeString(op.JsonMetadata)
+	return enc.Err()
+}
+
 // FC_REFLECT( steemit::chain::account_update_operation,
 //             (account)
 //             (owner)
